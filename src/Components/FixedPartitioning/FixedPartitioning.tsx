@@ -86,8 +86,13 @@ export const FixedPartitioning = () => {
 
       const partitionSize = Number(response);
 
-      if (partitionSize === 0) {
-        alert('El tamaño de la partición no puede ser 0.');
+      if (isNaN(partitionSize)) {
+        alert('El tamaño de la partición debe ser un número.');
+        continue;
+      }
+
+      if (partitionSize <= 0) {
+        alert('El tamaño de la partición no puede ser igual o menor a 0.');
         continue;
       }
 
@@ -126,10 +131,6 @@ export const FixedPartitioning = () => {
         available: memory.available - process.size,
       });
     } else {
-      const message =
-        'No hay partición disponible para el proceso, se añadirá a la lista de espera.';
-      alert(message);
-
       setWaitingProcesses([...waitingProcesses, process]);
     }
   };
@@ -159,88 +160,102 @@ export const FixedPartitioning = () => {
 
   return (
     <Box>
-      <Heading fontSize={'2xl'}>Simulador de memoria estática</Heading>
-      <Text mt={4}>Instrucciones:</Text>
-      <Text mt={2}>1. Ingrese el tamaño de la memoria principal en kilobytes (KB).</Text>
-      <Text mt={2}>2. Ingrese el tamaño del sistema operativo en kilobytes (KB).</Text>
-      <Text mt={2}>3. Presione el botón de simular.</Text>
+      <Heading fontSize={'xl'} mt={6}>
+        Simulador de memoria estática
+      </Heading>
       <Divider my={6} />
       {memory.size === 0 && <MemoryForm handleCreateMemory={createMemory} />}
       {memory.size !== 0 && (
         <>
           <ProcessForm handleAddProcess={addProcess}></ProcessForm>
-          <Box mt={6}>
-            <Flex alignItems={'end'} gap={2}>
-              <Heading fontSize={'2xl'}>{availableMemory} KB</Heading>
-              <Text>Disponibles</Text>
-            </Flex>
-            <Flex alignItems={'end'} gap={2}>
-              <Heading fontSize={'2xl'}>{occupiedMemory} KB</Heading>
-              <Text>Ocupados</Text>
-            </Flex>
-            <SimpleGrid>
-              <Stack mt={4} gap={2}>
-                {memory.partitions.map((partition, index) => {
-                  return (
-                    <Flex key={index} alignItems={'start'} gap={4}>
-                      <Box
-                        bg={
-                          (partition.process && partition.process.color) ?? 'transparent'
-                        }
-                        border={!partition.process ? '2px solid white' : ''}
-                        rounded={'lg'}
-                        height={((partition.size * 100) / memory.size) * 8 + 'px'}
-                        mt={2}
-                        w={12}
-                      />
-
-                      <Stack mt={3}>
-                        <Text lineHeight={0.5} fontSize={'2xl'}>
-                          {partition.size - partition.available} KB de {partition.size} KB
-                        </Text>
-                        <Text>
-                          {partition.process ? partition.process.name : 'Libre'}
-                        </Text>
-                      </Stack>
-                      {partition.process && partition.id !== 0 && (
-                        <IconButton
-                          aria-label='Eliminar proceso'
+          <Divider mt={6} mb={3} />
+          <SimpleGrid columns={2}>
+            <Box>
+              <Heading fontSize={'xl'}>Memoria Principal</Heading>
+              <Box mt={2}>
+                <Flex alignItems={'end'} gap={2}>
+                  <Heading fontSize={'2xl'}>{availableMemory} KB</Heading>
+                  <Text>Disponibles</Text>
+                </Flex>
+                <Flex alignItems={'end'} gap={2}>
+                  <Heading fontSize={'2xl'}>{occupiedMemory} KB</Heading>
+                  <Text>Ocupados</Text>
+                </Flex>
+                <Stack mt={4} gap={2}>
+                  {memory.partitions.map((partition, index) => {
+                    return (
+                      <Flex key={index} alignItems={'start'} gap={4}>
+                        <Flex
+                          border='3px solid white'
+                          bg={'transparent'}
+                          height={((partition.size * 100) / memory.size) * 8 + 'px'}
                           mt={2}
-                          icon={<FiX />}
-                          onClick={() => removeProcess(partition.process as Process)}
-                          rounded={'full'}
-                          size={'xs'}
-                        />
-                      )}
-                    </Flex>
-                  );
-                })}
-              </Stack>
-              {waitingProcesses.length > 0 && (
-                <Box mt={4}>
-                  <Heading fontSize={'xl'}>Lista de espera</Heading>
-                  <Stack mt={2} gap={2}>
-                    {waitingProcesses.map((process, index) => (
-                      <Flex key={index} alignItems={'center'} gap={4}>
-                        <Box
-                          bg={process.color}
-                          rounded={'lg'}
-                          height={((process.size * 100) / memory.size) * 8}
                           w={12}
-                        />
+                          rounded={'lg'}
+                          alignItems={'end'}
+                          overflow={'hidden'}
+                        >
+                          <Box
+                            bg={
+                              (partition.process && partition.process.color) ??
+                              'transparent'
+                            }
+                            height={
+                              ((partition.size - partition.available) * 100) /
+                                partition.size +
+                              '%'
+                            }
+                            w={'full'}
+                          />
+                        </Flex>
+
                         <Stack mt={3}>
                           <Text lineHeight={0.5} fontSize={'2xl'}>
-                            {process.size} KB
+                            {partition.size - partition.available} KB de {partition.size}{' '}
+                            KB
                           </Text>
-                          <Text>{process.name}</Text>
+                          <Text>
+                            {partition.process ? partition.process.name : 'Libre'}
+                          </Text>
                         </Stack>
+                        {partition.process && partition.id !== 0 && (
+                          <IconButton
+                            aria-label='Eliminar proceso'
+                            mt={2}
+                            icon={<FiX />}
+                            onClick={() => removeProcess(partition.process as Process)}
+                            rounded={'full'}
+                            size={'xs'}
+                          />
+                        )}
                       </Flex>
-                    ))}
-                  </Stack>
-                </Box>
-              )}
-            </SimpleGrid>
-          </Box>
+                    );
+                  })}
+                </Stack>
+              </Box>
+            </Box>
+            <Box>
+              <Heading fontSize={'xl'}>Lista de espera</Heading>
+              <Stack mt={2} gap={2}>
+                {waitingProcesses.map((process, index) => (
+                  <Flex key={index} alignItems={'center'} gap={4}>
+                    <Box
+                      bg={process.color}
+                      rounded={'lg'}
+                      height={((process.size * 100) / memory.size) * 8}
+                      w={12}
+                    />
+                    <Stack mt={3}>
+                      <Text lineHeight={0.5} fontSize={'2xl'}>
+                        {process.size} KB
+                      </Text>
+                      <Text>{process.name}</Text>
+                    </Stack>
+                  </Flex>
+                ))}
+              </Stack>
+            </Box>
+          </SimpleGrid>
         </>
       )}
     </Box>

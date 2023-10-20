@@ -1,4 +1,4 @@
-import { Button, FormControl, FormLabel, Input, Stack } from '@chakra-ui/react';
+import { Button, FormControl, FormLabel, Heading, Input, Stack } from '@chakra-ui/react';
 import React, { FC } from 'react';
 import { Process } from '../../types/types';
 import { randomColor } from '../../consts/consts';
@@ -23,21 +23,24 @@ const ProcessForm: FC<Props> = ({ handleAddProcess }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Stack spacing={4} flexDirection={'row'}>
-        <FormControl id='processName' isRequired>
-          <FormLabel>Nombre del proceso</FormLabel>
-          <Input type='text' />
-        </FormControl>
-        <FormControl id='processSize' isRequired>
-          <FormLabel>Tamaño del proceso (KB)</FormLabel>
-          <Input type='number' min={1} max={1000000} />
-        </FormControl>
-      </Stack>
-      <Button colorScheme='blue' type='submit' mt={4} w={'full'}>
-        Agregar
-      </Button>
-    </form>
+    <>
+      <Heading fontSize={'xl'}>Agregar nuevo proceso</Heading>
+      <form onSubmit={handleSubmit}>
+        <Stack spacing={4} flexDirection={'row'} mt={4}>
+          <FormControl id='processName' isRequired>
+            <FormLabel>Nombre del proceso</FormLabel>
+            <Input type='text' />
+          </FormControl>
+          <FormControl id='processSize' isRequired>
+            <FormLabel>Tamaño del proceso (KB)</FormLabel>
+            <Input type='number' min={1} max={1000000} />
+          </FormControl>
+        </Stack>
+        <Button colorScheme='blue' type='submit' mt={4} w={'full'}>
+          Agregar
+        </Button>
+      </form>
+    </>
   );
 };
 

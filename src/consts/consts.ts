@@ -19,6 +19,23 @@ export const COLORS: Color[] = [
   '#667EEA',
   '#9F7AEA',
   '#ED64A6',
+  '#FF6B6B',
+  '#FFD166',
+  '#FFFCB7',
+  '#87E9A6',
+  '#6AC1D7',
+  '#A293E3',
+  '#CBA4F7',
+  '#F08BD7',
+  '#F67280',
+  '#F7D154',
+  '#FFEC99',
+  '#A6F5B6',
+  '#88DCE8',
+  '#B8A2EE',
+  '#D9A7FA',
+  '#F490E6',
+  '#F76D7B',
 ];
 
 export const randomColor = () => COLORS[Math.floor(Math.random() * COLORS.length)];
