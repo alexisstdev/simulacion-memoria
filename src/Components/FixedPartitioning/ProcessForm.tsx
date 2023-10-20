@@ -32,7 +32,7 @@ const ProcessForm: FC<Props> = ({ handleAddProcess }) => {
             <Input type='text' />
           </FormControl>
           <FormControl id='processSize' isRequired>
-            <FormLabel>Tamaño del proceso (KB)</FormLabel>
+            <FormLabel>Tamaño del proceso (MB)</FormLabel>
             <Input type='number' min={1} max={1000000} />
           </FormControl>
         </Stack>

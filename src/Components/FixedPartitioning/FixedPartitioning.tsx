@@ -78,7 +78,7 @@ export const FixedPartitioning = () => {
 
     while (memorySize > 0) {
       const currentPartitions = partitions.length + 1;
-      const message = `Ingrese el tamaño de la partición ${currentPartitions} en KB, memoria restante ${memorySize} KB`;
+      const message = `Ingrese el tamaño de la partición ${currentPartitions} en MB, memoria restante ${memorySize} MB`;
 
       const response = prompt(message);
 
@@ -174,11 +174,11 @@ export const FixedPartitioning = () => {
               <Heading fontSize={'xl'}>Memoria Principal</Heading>
               <Box mt={2}>
                 <Flex alignItems={'end'} gap={2}>
-                  <Heading fontSize={'2xl'}>{availableMemory} KB</Heading>
+                  <Heading fontSize={'2xl'}>{availableMemory} MB</Heading>
                   <Text>Disponibles</Text>
                 </Flex>
                 <Flex alignItems={'end'} gap={2}>
-                  <Heading fontSize={'2xl'}>{occupiedMemory} KB</Heading>
+                  <Heading fontSize={'2xl'}>{occupiedMemory} MB</Heading>
                   <Text>Ocupados</Text>
                 </Flex>
                 <Stack mt={4} gap={2}>
@@ -211,8 +211,8 @@ export const FixedPartitioning = () => {
 
                         <Stack mt={3}>
                           <Text lineHeight={0.5} fontSize={'2xl'}>
-                            {partition.size - partition.available} KB de {partition.size}{' '}
-                            KB
+                            {partition.size - partition.available} MB de {partition.size}{' '}
+                            MB
                           </Text>
                           <Text>
                             {partition.process ? partition.process.name : 'Libre'}
@@ -247,7 +247,7 @@ export const FixedPartitioning = () => {
                     />
                     <Stack mt={3}>
                       <Text lineHeight={0.5} fontSize={'2xl'}>
-                        {process.size} KB
+                        {process.size} MB
                       </Text>
                       <Text>{process.name}</Text>
                     </Stack>

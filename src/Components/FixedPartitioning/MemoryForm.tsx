@@ -20,11 +20,11 @@ export const MemoryForm: FC<Props> = ({ handleCreateMemory }) => {
       <form onSubmit={(e) => handleSubmit(e)}>
         <Stack spacing={4} flexDirection={'row'} mt={4}>
           <FormControl id='mainMemory' isRequired>
-            <FormLabel>Memoria principal (KB)</FormLabel>
+            <FormLabel>Memoria principal (MB)</FormLabel>
             <Input type='number' min={1} max={1000000} />
           </FormControl>
           <FormControl id='so' isRequired>
-            <FormLabel>Sistema operativo (KB)</FormLabel>
+            <FormLabel>Sistema operativo (MB)</FormLabel>
             <Input type='number' min={1} max={1000000} />
           </FormControl>
         </Stack>
