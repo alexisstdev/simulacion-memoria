@@ -10,12 +10,11 @@ import {
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import { FiX } from 'react-icons/fi';
-import { randomColor } from '../../consts/consts';
 import { Memory, Partition, Process } from '../../types/types';
 import { MemoryForm } from './MemoryForm';
 import ProcessForm from './ProcessForm';
 
-const memoryExample: Memory = {
+/* const memoryExample: Memory = {
   size: 100,
   partitions: [
     {
@@ -44,7 +43,7 @@ const memoryExample: Memory = {
     },
   ],
   available: 30,
-};
+}; */
 
 const memoryInitialState: Memory = {
   size: 0,
