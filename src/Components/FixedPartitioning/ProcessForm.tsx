@@ -1,13 +1,14 @@
 import { Button, FormControl, FormLabel, Heading, Input, Stack } from '@chakra-ui/react';
 import React, { FC } from 'react';
-import { Process } from '../../types/types';
 import { randomColor } from '../../consts/consts';
+import { Process } from '../../types/types';
 
 interface Props {
   handleAddProcess: (process: Process) => void;
+  unit: 'MB' | 'KB' | 'GB';
 }
 
-const ProcessForm: FC<Props> = ({ handleAddProcess }) => {
+const ProcessForm: FC<Props> = ({ handleAddProcess, unit }) => {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const process: Process = {
@@ -32,7 +33,7 @@ const ProcessForm: FC<Props> = ({ handleAddProcess }) => {
             <Input type='text' />
           </FormControl>
           <FormControl id='processSize' isRequired>
-            <FormLabel>Tamaño del proceso (MB)</FormLabel>
+            <FormLabel>Tamaño del proceso ({unit})</FormLabel>
             <Input type='number' min={1} max={1000000} />
           </FormControl>
         </Stack>

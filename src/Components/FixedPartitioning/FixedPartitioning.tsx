@@ -54,12 +54,13 @@ const memoryInitialState: Memory = {
 export const FixedPartitioning = () => {
   const [memory, setMemory] = useState(memoryInitialState);
   const [waitingProcesses, setWaitingProcesses] = useState<Process[]>([]);
+  const [unit, setUnit] = useState<'MB' | 'KB' | 'GB'>('MB');
 
   const availableMemory = memory.available;
 
   const occupiedMemory = memory.size - memory.available;
 
-  const createMemory = (mainMemory: number, soSize: number) => {
+  const createMemory = (mainMemory: number, soSize: number, memoryUnit: string) => {
     const so: Process = {
       size: soSize,
       name: 'Sistema operativo',
@@ -78,7 +79,7 @@ export const FixedPartitioning = () => {
 
     while (memorySize > 0) {
       const currentPartitions = partitions.length + 1;
-      const message = `Ingrese el tamaño de la partición ${currentPartitions} en MB, memoria restante ${memorySize} MB`;
+      const message = `Ingrese el tamaño de la partición ${currentPartitions} en ${unit}, memoria restante ${memorySize} ${unit}`;
 
       const response = prompt(message);
 
@@ -110,6 +111,7 @@ export const FixedPartitioning = () => {
       memorySize -= partitionSize;
     }
 
+    setUnit(memoryUnit as 'MB' | 'KB' | 'GB');
     setMemory({ size: mainMemory, partitions, available: mainMemory - so.size });
   };
 
@@ -167,18 +169,22 @@ export const FixedPartitioning = () => {
       {memory.size === 0 && <MemoryForm handleCreateMemory={createMemory} />}
       {memory.size !== 0 && (
         <>
-          <ProcessForm handleAddProcess={addProcess}></ProcessForm>
+          <ProcessForm handleAddProcess={addProcess} unit={unit}></ProcessForm>
           <Divider mt={6} mb={3} />
           <SimpleGrid columns={2}>
             <Box>
               <Heading fontSize={'xl'}>Memoria Principal</Heading>
               <Box mt={2}>
                 <Flex alignItems={'end'} gap={2}>
-                  <Heading fontSize={'2xl'}>{availableMemory} MB</Heading>
+                  <Heading fontSize={'2xl'}>
+                    {availableMemory} {unit}
+                  </Heading>
                   <Text>Disponibles</Text>
                 </Flex>
                 <Flex alignItems={'end'} gap={2}>
-                  <Heading fontSize={'2xl'}>{occupiedMemory} MB</Heading>
+                  <Heading fontSize={'2xl'}>
+                    {occupiedMemory} {unit}
+                  </Heading>
                   <Text>Ocupados</Text>
                 </Flex>
                 <Stack mt={4} gap={2}>
@@ -211,8 +217,8 @@ export const FixedPartitioning = () => {
 
                         <Stack mt={3}>
                           <Text lineHeight={0.5} fontSize={'2xl'}>
-                            {partition.size - partition.available} MB de {partition.size}{' '}
-                            MB
+                            {partition.size - partition.available} {unit} de
+                            {partition.size} {unit}
                           </Text>
                           <Text>
                             {partition.process ? partition.process.name : 'Libre'}
@@ -247,7 +253,7 @@ export const FixedPartitioning = () => {
                     />
                     <Stack mt={3}>
                       <Text lineHeight={0.5} fontSize={'2xl'}>
-                        {process.size} MB
+                        {process.size} {unit}
                       </Text>
                       <Text>{process.name}</Text>
                     </Stack>
