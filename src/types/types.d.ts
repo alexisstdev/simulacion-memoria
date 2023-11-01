@@ -6,7 +6,7 @@ export interface Process {
 }
 
 export interface Partition {
-  id: number;
+  id: string;
   size: number;
   process: Process | null;
   available: number;

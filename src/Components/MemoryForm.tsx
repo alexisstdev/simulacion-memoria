@@ -1,5 +1,6 @@
 import {
   Button,
+  Divider,
   FormControl,
   FormLabel,
   Heading,
@@ -25,6 +26,7 @@ export const MemoryForm: FC<Props> = ({ handleCreateMemory }) => {
 
   return (
     <>
+      <Divider my={6} />
       <Heading fontSize={'xl'}>Crear configuración de memoria</Heading>
       <form onSubmit={(e) => handleSubmit(e)}>
         <Stack spacing={4} flexDirection={'row'} mt={4}>

@@ -15,44 +15,13 @@ import { MemoryForm } from '../MemoryForm';
 import PartitionForm from '../PartitionForm';
 import ProcessForm from '../ProcessForm';
 
-/* const memoryExample: Memory = {
-  size: 100,
-  partitions: [
-    {
-      id: 0,
-      size: 10,
-      process: { name: 'Sistema operativo', size: 10, id: '1', color: '#FFFFFF' },
-      available: 0,
-    },
-    {
-      id: 1,
-      size: 30,
-      process: { name: 'Word', size: 10, id: '2', color: randomColor() },
-      available: 20,
-    },
-    {
-      id: 2,
-      size: 30,
-      process: { name: 'Excel', size: 20, id: '3', color: randomColor() },
-      available: 10,
-    },
-    {
-      id: 3,
-      size: 30,
-      process: { name: 'VS Code', size: 30, id: '4', color: randomColor() },
-      available: 0,
-    },
-  ],
-  available: 30,
-}; */
-
 const memoryInitialState: Memory = {
   size: 0,
   partitions: [],
   available: 0,
 };
 
-export const FixedPartitioning = () => {
+export const DynamicPartitioning = () => {
   const [memory, setMemory] = useState(memoryInitialState);
   const [waitingProcesses, setWaitingProcesses] = useState<Process[]>([]);
   const [unit, setUnit] = useState<'MB' | 'KB' | 'GB'>('MB');
@@ -110,25 +79,39 @@ export const FixedPartitioning = () => {
   };
 
   const addProcess = (process: Process) => {
-    const availablePartition = memory.partitions.find(
-      (partition) => !partition.process && partition.size >= process.size
+    if (process.size > memory.available) {
+      setWaitingProcesses([...waitingProcesses, process]);
+      return;
+    }
+
+    const bestFitPartition: Partition | null = memory.partitions.reduce(
+      (bestFit: Partition | null, partition) => {
+        if (!partition.process && partition.available >= process.size) {
+          if (!bestFit || partition.available < bestFit.available) {
+            return partition;
+          }
+        }
+        return bestFit;
+      },
+      null
     );
 
-    if (availablePartition) {
-      availablePartition.process = process;
-
-      availablePartition.available -= process.size;
+    if (bestFitPartition) {
+      bestFitPartition.process = process;
+      bestFitPartition.available = bestFitPartition.size - process.size;
 
       setMemory({
         ...memory,
-        partitions: memory.partitions.map((partition) =>
-          partition.id === availablePartition.id ? availablePartition : partition
+        partitions: memory.partitions.map((p) =>
+          p.id === bestFitPartition.id ? bestFitPartition : p
         ),
         available: memory.available - process.size,
       });
-    } else {
-      setWaitingProcesses([...waitingProcesses, process]);
+
+      return;
     }
+
+    setWaitingProcesses([...waitingProcesses, process]);
   };
 
   const removeProcess = (process: Process) => {
@@ -167,16 +150,11 @@ export const FixedPartitioning = () => {
   return (
     <Box>
       <Heading fontSize={'xl'} mt={6}>
-        Simulador de memoria estática
+        Simulador de memoria dinámica
       </Heading>
       {memory.size === 0 && <MemoryForm handleCreateMemory={createMemory} />}
       <Divider my={6} />
-      {memory.partitions.length !== 0 && (
-        <>
-          <PartitionForm addPartition={addPartition} unit={unit} />
-          <Divider my={6} />
-        </>
-      )}
+
       {memory.size !== 0 && (
         <>
           <ProcessForm handleAddProcess={addProcess} unit={unit}></ProcessForm>
@@ -240,8 +218,6 @@ export const FixedPartitioning = () => {
                       </Flex>
                     );
                   })}
-
-                  {/* Espacion sin particion */}
                   <Flex alignItems={'start'} gap={4}>
                     <Flex
                       border='3px solid white'
